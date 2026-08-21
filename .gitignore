@@ -1,0 +1,31 @@
+# Backend
+/yatramitra-backend/node_modules
+/yatramitra-backend/.env
+/yatramitra-backend/package-lock.json
+
+# Frontend
+/yatramitra-frontend/logs
+/yatramitra-frontend/*.log
+/yatramitra-frontend/npm-debug.log*
+/yatramitra-frontend/yarn-debug.log*
+/yatramitra-frontend/yarn-error.log*
+/yatramitra-frontend/pnpm-debug.log*
+/yatramitra-frontend/lerna-debug.log*
+
+/yatramitra-frontend/node_modules
+/yatramitra-frontend/dist
+/yatramitra-frontend/dist-ssr
+/yatramitra-frontend/*.local
+
+# Editor directories and files
+/yatramitra-frontend/.vscode/*
+/yatramitra-frontend/!.vscode/extensions.json
+/yatramitra-frontend/.idea
+/yatramitra-frontend/.DS_Store
+/yatramitra-frontend/*.suo
+/yatramitra-frontend/*.ntvs*
+/yatramitra-frontend/*.njsproj
+/yatramitra-frontend/*.sln
+/yatramitra-frontend/*.sw?
+
+
