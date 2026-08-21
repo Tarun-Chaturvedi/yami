@@ -1,14 +1,14 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Star, ArrowRight } from './Icons';
-import { CATEGORIES } from '../data';
+import { CATEGORIES } from '../data'; // Removed MOCK_DATA import
 
 export default function SiteGrid({ onSelectSite }) {
   const [sites, setSites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState('overall');
   const [minScore, setMinScore] = useState(0);
-  const [selectedCity, setSelectedCity] = useState('All'); // New state for city selection
 
+  // Fetch real data from the backend
   useEffect(() => {
     fetch('https://yami-3vw3.vercel.app/api/sites')
       .then(response => response.json())
@@ -22,31 +22,10 @@ export default function SiteGrid({ onSelectSite }) {
       });
   }, []);
 
-  // Dynamically extract a unique list of cities from the fetched data
-  const availableCities = useMemo(() => {
-    const citySet = new Set();
-    sites.forEach(site => {
-      // Smart extraction: Checks for known major hubs first, 
-      // otherwise falls back to the first part of the location string.
-      const loc = site.location;
-      if (loc.includes('Lucknow')) citySet.add('Lucknow');
-      else if (loc.includes('Agra')) citySet.add('Agra');
-      else if (loc.includes('Hampi')) citySet.add('Hampi');
-      else citySet.add(loc.split(',')[0].trim());
-    });
-    return Array.from(citySet).sort();
-  }, [sites]);
-
-  // Compute the sorted and filtered list dynamically
+  // Compute the sorted and filtered list dynamically using the fetched 'sites'
   const displayData = useMemo(() => {
     let filtered = sites;
     
-    // 1. Apply City Filter
-    if (selectedCity !== 'All') {
-      filtered = filtered.filter(site => site.location.includes(selectedCity));
-    }
-
-    // 2. Apply Minimum Score Filter
     if (minScore > 0) {
       filtered = filtered.filter(site => {
         if (sortBy === 'overall') return site.overallAvg >= minScore;
@@ -54,7 +33,6 @@ export default function SiteGrid({ onSelectSite }) {
       });
     }
 
-    // 3. Apply Sorting
     return filtered.sort((a, b) => {
       let valA = sortBy === 'overall' ? a.overallAvg : a.ratings[sortBy].score;
       let valB = sortBy === 'overall' ? b.overallAvg : b.ratings[sortBy].score;
@@ -62,7 +40,7 @@ export default function SiteGrid({ onSelectSite }) {
       if (valA === valB) return a.name.localeCompare(b.name);
       return valB - valA; 
     });
-  }, [sites, sortBy, minScore, selectedCity]);
+  }, [sites, sortBy, minScore]);
 
   return (
     <section className="py-24 px-8 md:px-24 max-w-7xl mx-auto">
@@ -76,24 +54,6 @@ export default function SiteGrid({ onSelectSite }) {
       {/* Sticky Filter & Sort Bar */}
       <div className="sticky top-[88px] z-30 bg-[#F9F6F0]/95 backdrop-blur-sm py-4 mb-12 border-b border-[#D5CFC4] flex flex-wrap gap-8 items-center -mx-8 px-8 md:mx-0 md:px-0">
         
-        {/* NEW: City / Destination Dropdown */}
-        <div className="flex flex-col gap-1">
-          <label htmlFor="city" className="font-sans text-[10px] text-[#B24C38] uppercase tracking-[0.2em] font-bold">
-            Destination
-          </label>
-          <select 
-            id="city"
-            value={selectedCity} 
-            onChange={(e) => setSelectedCity(e.target.value)}
-            className="bg-transparent font-serif text-xl text-[#2A2626] border-none outline-none cursor-pointer focus:ring-0 w-full min-w-[150px]"
-          >
-            <option value="All">All Regions</option>
-            {availableCities.map(city => (
-              <option key={city} value={city}>{city}</option>
-            ))}
-          </select>
-        </div>
-
         {/* Sort Dropdown */}
         <div className="flex flex-col gap-1">
           <label htmlFor="sort" className="font-sans text-[10px] text-[#B24C38] uppercase tracking-[0.2em] font-bold">
@@ -103,7 +63,7 @@ export default function SiteGrid({ onSelectSite }) {
             id="sort"
             value={sortBy} 
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-transparent font-serif text-xl text-[#2A2626] border-none outline-none cursor-pointer focus:ring-0 w-full min-w-[200px]"
+            className="bg-transparent font-serif text-[15px] text-[#2A2626] border-none outline-none cursor-pointer focus:ring-0 w-full min-w-[200px]"
           >
             <option value="overall">Overall Excellence</option>
             {Object.entries(CATEGORIES).map(([key, label]) => (
@@ -121,7 +81,7 @@ export default function SiteGrid({ onSelectSite }) {
             id="filter"
             value={minScore} 
             onChange={(e) => setMinScore(Number(e.target.value))}
-            className="bg-transparent font-sans text-sm tracking-widest uppercase text-[#2A2626] border-none outline-none cursor-pointer focus:ring-0 w-full min-w-[150px]"
+            className="bg-transparent font-serif text-sm tracking-widest text-[#2A2626] border-none outline-none cursor-pointer focus:ring-0 w-full min-w-[150px]"
           >
             <option value={0}>Any Rating</option>
             <option value={3}>3+ Stars (Standard)</option>
@@ -145,7 +105,7 @@ export default function SiteGrid({ onSelectSite }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {displayData.map((site) => (
             <div 
-              key={site._id} 
+              key={site._id} // Changed from site.id to MongoDB's site._id
               className="group cursor-pointer flex flex-col" 
               onClick={() => onSelectSite(site)}
             >
