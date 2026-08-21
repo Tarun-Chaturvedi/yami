@@ -14,7 +14,7 @@ export default function AdminDashboard() {
 
   const fetchPendingSites = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/sites/pending');
+      const res = await fetch('https://yami-3vw3.vercel.app/api/sites/pending');
       const data = await res.json();
       setPendingSites(data);
       setIsLoading(false);
