@@ -10,7 +10,7 @@ export default function SiteGrid({ onSelectSite }) {
   const [selectedCity, setSelectedCity] = useState('All'); // New state for city selection
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/sites')
+    fetch('https://yami-3vw3.vercel.app/api/sites')
       .then(response => response.json())
       .then(data => {
         setSites(data);

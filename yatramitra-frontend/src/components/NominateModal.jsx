@@ -32,7 +32,7 @@ export default function NominateModal({ isOpen, onClose }) {
     e.preventDefault();
     
     try {
-      const response = await fetch('http://localhost:5000/api/sites/nominate', {
+      const response = await fetch('https://yami-3vw3.vercel.app/api/sites/nominate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
